@@ -17,7 +17,7 @@ export default class Gallery {
     const element = this.getClonedTemplate();
 
     const canvas = element.getElementsByTagName('canvas')[0];
-    const renderer = new ModelRenderer(canvas, scannedObject.measurementData, true);
+    const renderer = new ModelRenderer(canvas, scannedObject.measurementData, scannedObject.measurementData.length > 0);
 
     const cardTitleElement = element.querySelector<HTMLElement>('.card-title')
     if (cardTitleElement != null) {
