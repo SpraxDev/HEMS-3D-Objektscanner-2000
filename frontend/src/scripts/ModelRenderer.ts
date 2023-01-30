@@ -27,17 +27,7 @@ export default class ModelRenderer {
 
   constructor(canvas: HTMLCanvasElement, measurementData: number[][], enableControls: boolean = false) {
     this.canvas = canvas;
-    //this.measurementData = measurementData;
-
-    this.measurementData = [];
-    for (let i = 0; i < 50; ++i) {
-      for (let j = 0; j < 50; ++j) {
-        if (!this.measurementData[i]) {
-          this.measurementData[i] = [];
-        }
-        this.measurementData[i][j] = Math.random() / 10;
-      }
-    }
+    this.measurementData = measurementData;
 
     this.objGroup = new Three.Group();
     this.scene.add(this.objGroup);
@@ -162,7 +152,7 @@ export default class ModelRenderer {
     geometry.setAttribute('position', new Three.BufferAttribute(new Float32Array(position_data), 3));
     geometry.setAttribute('normal', new Three.BufferAttribute(new Float32Array(normal_data), 3));
     const material = new Three.MeshNormalMaterial();
-    material.side = Three.DoubleSide; // wichtig c:
+    material.side = Three.DoubleSide;
 
     return new Three.Mesh(geometry, material);
   }
@@ -178,18 +168,6 @@ export default class ModelRenderer {
     this.controls.maxDistance = boundingBoxSize * 2;
     this.controls.target.copy(boundingBoxCenter);
     this.controls.update();
-  }
-
-  static randomPoints(count: number): Three.Vector3[] {
-    const points: Three.Vector3[] = [];
-    for (let i = 0; i < count; ++i) {
-      points.push(new Three.Vector3(
-        Math.random() * 10 - 5,
-        Math.random() * 10 - 5,
-        Math.random() * 10 - 5
-      ));
-    }
-    return points;
   }
 
   private static configureCameraToLookAtObject(camera: Three.PerspectiveCamera, boxSize: number, boxCenter: Three.Vector3, cameraAspect: number): void {
@@ -208,5 +186,21 @@ export default class ModelRenderer {
     camera.updateProjectionMatrix();
 
     camera.lookAt(boxCenter.x, boxCenter.y, boxCenter.z);
+  }
+
+  private static generateRandomMeasurementData(): number[][] {
+    const measurementData: number[][] = [];
+
+    for (let i = 0; i < 50; ++i) {
+      for (let j = 0; j < 50; ++j) {
+        if (!measurementData[i]) {
+          measurementData[i] = [];
+        }
+
+        measurementData[i][j] = Math.random() / 10;
+      }
+    }
+
+    return measurementData;
   }
 }
