@@ -1,0 +1,24 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~awesome-notifications/src/styles/style";
+
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+
+#gallery {
+  background: rgba(79, 7, 163);
+  background: linear-gradient(45deg, rgb(8, 4, 85) 0%, rgb(80, 8, 165) 25%, rgb(255, 0, 160) 100%) no-repeat;
+}
+
+header {
+  background-color: $gray-400;
+}
+
+main {
+  background-color: $gray-300;
+}
+
+footer {
+  background-color: $gray-400;
+}
