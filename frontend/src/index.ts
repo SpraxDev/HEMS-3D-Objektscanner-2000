@@ -9,7 +9,6 @@ export const notifier = new AWN();
 main().catch(console.error);
 
 async function main() {
-  notifier.async(new Promise(resolve => window.addEventListener('load', resolve)));
   const galleryElement = document.getElementById('gallery');
   if (galleryElement == null) {
     throw new Error('Could not find gallery element');
