@@ -1,10 +1,20 @@
-import './index.scss';
 import AWN from 'awesome-notifications';
 
-import { BackendConnector } from './scripts/BackendConnector';
+import './index.scss';
 import Gallery from './scripts/Gallery';
 
-export const notifier = new AWN();
+export const notifier = new AWN({
+  labels: {
+    success: 'Erfolg',
+    async: 'Laden...',
+    confirm: 'Bestätigung erforderlich',
+    confirmOk: 'OK',
+    confirmCancel: 'Abbrechen',
+  },
+  messages: {
+    'async-block': 'Laden'
+  }
+});
 
 main().catch(console.error);
 
@@ -15,14 +25,5 @@ async function main() {
   }
 
   const gallery = new Gallery(galleryElement);
-
-  const scannedObjects = await BackendConnector.getObjectList();
-  for (const scannedObject of scannedObjects) {
-    gallery.addEntry(scannedObject);
-  }
-
-  for (const scannedObject of scannedObjects) {
-    const objectWithPoints = await BackendConnector.getObject(scannedObject.id);
-    gallery.setPointsForEntry(objectWithPoints);
-  }
+  notifier.async(Gallery.fetchObjectsAndInit(gallery), '3D Modelle wurden geladen', undefined, 'Gespeicherte 3D Modelle');
 }

@@ -54,6 +54,12 @@ export default class ModelRenderer {
     link.download = `${fileName}.stl`;
     link.click();
   }
+
+  destroy(): void {
+    this.renderer.setAnimationLoop(null);
+    this.scene.clear();
+  }
+
   private init() {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.canvas.width, this.canvas.height);
@@ -199,7 +205,7 @@ export default class ModelRenderer {
     camera.lookAt(boxCenter.x, boxCenter.y, boxCenter.z);
   }
 
-  private static generateRandomMeasurementData(): number[][] {
+  static generateRandomMeasurementData(): number[][] {
     const measurementData: number[][] = [];
 
     for (let i = 0; i < 50; ++i) {
