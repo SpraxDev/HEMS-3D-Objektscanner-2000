@@ -1,0 +1,46 @@
+{
+  "name": "3d-objektscanner-2000-backend",
+  "version": "0.0.1-SNAPSHOT",
+  "private": true,
+  "description": "Das API-Backend (+ optionaler Frontend-Webserver) des 3D-Objektscanners 2000",
+  "homepage": "https://github.com/SpraxDev/HEMS-3D-Objektscanner-2000#readme",
+  "license": "MIT",
+  "keywords": [],
+  "author": {
+    "name": "Christian Koop",
+    "url": "https://github.com/SpraxDev",
+    "email": "contact@sprax2013.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpraxDev/HEMS-3D-Objektscanner-2000.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SpraxDev/HEMS-3D-Objektscanner-2000/issues"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "nodemon --ext ts --watch ./src --exec \"ts-node src/index.ts\""
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "@spraxdev/node-commons": "github:spraxdev/node-commons#12123e997e5b0ead09d93a09daa2a070181dddd4",
+    "express": "^4.18.2",
+    "pg": "^8.9.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^1.0.1",
+    "@types/express": "^4.17.16",
+    "@types/pg": "^8.6.6",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  },
+  "nodemonConfig": {
+    "signal": "SIGINT"
+  }
+}
