@@ -1,5 +1,5 @@
 import Express from 'express';
-import { handleRequestRestfully } from '@spraxdev/node-commons';
+import { handleRequestRestfully, HttpResponse } from '@spraxdev/node-commons';
 import { getConfig, getHttpClient, getPostgresDatabase } from './Constants';
 import { ObjectModel } from './PostgresDatabase';
 
@@ -149,24 +149,26 @@ function objectByIdRoute(req: Express.Request, res: Express.Response, next: Expr
 function scanStatusRoute(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
   handleRequestRestfully(req, res, next, {
     get: async (): Promise<void> => {
-      const scannerStatus = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/status`);
-      if (scannerStatus.ok) {
-        const scannerStatusBody: { running: boolean } = JSON.parse(scannerStatus.body.toString('utf-8'));
+      await handleUnableToConnectToRemoteScanner(res, async () => {
+        const scannerStatus = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/status`);
+        if (scannerStatus.ok) {
+          const scannerStatusBody: { running: boolean } = JSON.parse(scannerStatus.body.toString('utf-8'));
 
-        let measurementData: number[][] | undefined;
-        if (scannerStatusBody.running) {
-          const newestObject = await getPostgresDatabase().findNewestObject();
-          if (newestObject != null) {
-            measurementData = await fetchMeasurementDataForObject(newestObject.id);
+          let measurementData: number[][] | undefined;
+          if (scannerStatusBody.running) {
+            const newestObject = await getPostgresDatabase().findNewestObject();
+            if (newestObject != null) {
+              measurementData = await fetchMeasurementDataForObject(newestObject.id);
+            }
           }
+
+          res.send({ ...scannerStatusBody, measurementData });
+          return;
         }
 
-        res.send({ ...scannerStatusBody, measurementData });
-        return;
-      }
-
-      res.status(500)
-        .send({ message: 'Scanner responded with non-OK status code' });
+        res.status(500)
+          .send({ message: 'Scanner responded with non-OK status code' });
+      });
     }
   });
 }
@@ -174,10 +176,12 @@ function scanStatusRoute(req: Express.Request, res: Express.Response, next: Expr
 function scanStartRoute(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
   handleRequestRestfully(req, res, next, {
     post: async (): Promise<void> => {
-      const scannerResponse = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/start`);
+      await handleUnableToConnectToRemoteScanner(res, async () => {
+        const scannerResponse = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/start`);
 
-      res.status(scannerResponse.statusCode)
-        .send();
+        res.status(scannerResponse.statusCode)
+          .send();
+      });
     }
   });
 }
@@ -185,10 +189,26 @@ function scanStartRoute(req: Express.Request, res: Express.Response, next: Expre
 function scanStopRoute(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
   handleRequestRestfully(req, res, next, {
     post: async (): Promise<void> => {
-      const scannerResponse = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/stop`);
+      await handleUnableToConnectToRemoteScanner(res, async () => {
+        const scannerResponse = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/stop`);
 
-      res.status(scannerResponse.statusCode)
-        .send();
+        res.status(scannerResponse.statusCode)
+          .send();
+      });
     }
   });
+}
+
+async function handleUnableToConnectToRemoteScanner(res: Express.Response, callback: () => Promise<void>): Promise<void> {
+  try {
+    await callback();
+  } catch (err: any) {
+    if (err.code == 'ECONNREFUSED') {
+      res.status(500)
+        .send({ message: 'Cannot connect to remote scanner' });
+      return;
+    }
+
+    throw err;
+  }
 }

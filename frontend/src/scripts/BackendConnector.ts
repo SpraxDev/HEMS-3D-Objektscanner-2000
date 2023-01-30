@@ -54,7 +54,15 @@ export class BackendConnector {
     });
 
     if (!response.ok) {
-      throw new Error(`Got HTTP Status ${response.status} for URL '${url}'`);
+      let errorMessage = `Got HTTP Status ${response.status} for URL '${url}'`;
+      if (response.headers.get('Content-Type')?.includes('application/json')) {
+        const responseBody = await response.json();
+        if (responseBody.message) {
+          errorMessage = `${responseBody.message} – ${errorMessage}`;
+        }
+      }
+
+      throw new Error(errorMessage);
     }
     return response;
   }
