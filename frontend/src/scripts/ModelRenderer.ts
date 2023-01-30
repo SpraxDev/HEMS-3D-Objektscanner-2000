@@ -56,8 +56,12 @@ export default class ModelRenderer {
   }
 
   destroy(): void {
-    this.renderer.setAnimationLoop(null);
     this.scene.clear();
+
+    this.renderer.setAnimationLoop(() => {
+      this.renderer.render(this.scene, this.camera);
+      this.renderer.setAnimationLoop(null);
+    });
   }
 
   private init() {
