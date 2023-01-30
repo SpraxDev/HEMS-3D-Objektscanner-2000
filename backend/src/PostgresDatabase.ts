@@ -77,6 +77,11 @@ export default class PostgresDatabase {
     return result;
   }
 
+  async updateObjectNameById(objectId: number, name: string): Promise<boolean> {
+    const dbRes = await this.query('UPDATE objects SET name=$1 WHERE id=$2;', [name, objectId]);
+    return dbRes.rowCount > 0;
+  }
+
   async deleteObjectById(objectId: number): Promise<boolean> {
     const dbRest = await this.query('DELETE FROM objects WHERE id=$1;', [objectId]);
     return dbRest.rowCount > 0;
