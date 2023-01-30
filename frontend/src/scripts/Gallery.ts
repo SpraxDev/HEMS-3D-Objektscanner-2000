@@ -42,4 +42,10 @@ export default class Gallery {
 
     throw new Error('Unable to clone template as HTMLElement');
   }
+  private sanitizeFilename(filename: string): string {
+    return filename
+      .replace(/[^a-z0-9_.,]/gi, '_')
+      .replace(/_+/g, '_');
+  }
+
 }

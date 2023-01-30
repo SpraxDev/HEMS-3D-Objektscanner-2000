@@ -1,5 +1,6 @@
 import * as Three from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { STLExporter } from 'three/examples/jsm/exporters/STLExporter';
 
 export const CUBE_POINTS: Three.Vector3[] = [
   new Three.Vector3(-1, -1, -1),
@@ -43,6 +44,16 @@ export default class ModelRenderer {
     this.init();
   }
 
+  triggerExportDownload(fileName: string = 'model'): void {
+    const exporter = new STLExporter();
+    const stlString = exporter.parse(this.objectMesh, { binary: false });
+
+    const blob = new Blob([stlString], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${fileName}.stl`;
+    link.click();
+  }
   private init() {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.canvas.width, this.canvas.height);
