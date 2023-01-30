@@ -19,7 +19,9 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new CopyPlugin({
       patterns: [
-        { from: 'resources/*', to: '[name][ext]' }
+        { from: 'resources/*', to: '[name][ext]' },
+        { from: 'resources/favicon/*', to: 'favicon/[name][ext]' },
+        { from: 'resources/favicon/favicon.ico', to: '[name][ext]' }
       ]
     })
   ],
