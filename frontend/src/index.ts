@@ -5,8 +5,9 @@ import Gallery from './scripts/Gallery';
 
 export const notifier = new AWN({
   labels: {
-    success: 'Erfolg',
     async: 'Laden...',
+    success: 'Erfolg',
+    warning: 'Warnung',
     confirm: 'Bestätigung erforderlich',
     confirmOk: 'OK',
     confirmCancel: 'Abbrechen',

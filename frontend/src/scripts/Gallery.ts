@@ -50,7 +50,7 @@ export default class Gallery {
 
         this.clear();
         await Gallery.fetchObjectsAndInit(this);
-      })(), Gallery.htmlEscape(`'${scannedObject.name}' (ID ${scannedObject.id}) wurde in '${newName}' umbenannt`));
+      })(), Gallery.htmlEscape(`'${scannedObject.name}' (ID ${scannedObject.id}) wurde in '${newName}' umbenannt`), undefined, '3D Objekt Umbenennen');
     });
 
     element.querySelector<HTMLElement>('.btn-download')?.addEventListener('click', () => {
@@ -63,7 +63,7 @@ export default class Gallery {
         notifier.asyncBlock((async (): Promise<void> => {
           await BackendConnector.deleteObject(scannedObject.id);
           this.removeEntry(scannedObject.id);
-        })(), Gallery.htmlEscape(`'${scannedObject.name}' (ID ${scannedObject.id}) wurde gelöscht`));
+        })(), Gallery.htmlEscape(`'${scannedObject.name}' (ID ${scannedObject.id}) wurde gelöscht`), undefined, '3D Objekt Löschen');
       });
     });
 
