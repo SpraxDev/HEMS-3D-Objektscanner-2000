@@ -32,6 +32,20 @@ export default class PostgresDatabase {
     return this.pool.end();
   }
 
+  async findNewestObject(): Promise<ObjectModel | null> {
+    const dbRes = await this.query('SELECT id,name,created_at FROM objects ORDER BY created_at DESC LIMIT 1;');
+    if (dbRes.rowCount === 0) {
+      return null;
+    }
+
+    const row = dbRes.rows[0];
+    return {
+      id: row.id,
+      name: row.name,
+      createdAt: row.created_at
+    };
+  }
+
   async findAllObjects(): Promise<ObjectModel[]> {
     const dbRes = await this.query('SELECT id,name,created_at FROM objects ORDER BY created_at DESC;');
 

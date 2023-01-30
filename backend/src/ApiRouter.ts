@@ -1,11 +1,7 @@
 import Express from 'express';
 import { handleRequestRestfully } from '@spraxdev/node-commons';
-import { getPostgresDatabase } from './Constants';
+import { getConfig, getHttpClient, getPostgresDatabase } from './Constants';
 import { ObjectModel } from './PostgresDatabase';
-
-// POST /object/:scanId
-//
-// GET /scan/points?afterPointIndex=10
 
 export function createApiRouter(): Express.Router {
   const router = Express.Router();
@@ -22,9 +18,8 @@ export function createApiRouter(): Express.Router {
   router.use('/object/:objectId', objectByIdRoute);
 
   router.use('/scan/status', scanStatusRoute);
-  // router.use('/scan/points', scanPointsRoute);
   router.use('/scan/start', scanStartRoute);
-  router.use('/scan/abort', scanAbortRoute);
+  router.use('/scan/stop', scanStopRoute);
 
   return router;
 }
@@ -98,7 +93,7 @@ function objectByIdRoute(req: Express.Request, res: Express.Response, next: Expr
       }
       const objectId = parseInt(req.params.objectId);
 
-      Express.json()(req, res, async():Promise<void> => {
+      Express.json()(req, res, async (): Promise<void> => {
         if (req.body == null) {
           res.status(400)
             .send({ message: 'Invalid request body' });
@@ -154,8 +149,24 @@ function objectByIdRoute(req: Express.Request, res: Express.Response, next: Expr
 function scanStatusRoute(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
   handleRequestRestfully(req, res, next, {
     get: async (): Promise<void> => {
-      res.status(501)
-        .send({ message: 'Not implemented yet' });
+      const scannerStatus = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/status`);
+      if (scannerStatus.ok) {
+        const scannerStatusBody: { running: boolean } = JSON.parse(scannerStatus.body.toString('utf-8'));
+
+        let measurementData: number[][] | undefined;
+        if (scannerStatusBody.running) {
+          const newestObject = await getPostgresDatabase().findNewestObject();
+          if (newestObject != null) {
+            measurementData = await fetchMeasurementDataForObject(newestObject.id);
+          }
+        }
+
+        res.send({ ...scannerStatusBody, measurementData });
+        return;
+      }
+
+      res.status(500)
+        .send({ message: 'Scanner responded with non-OK status code' });
     }
   });
 }
@@ -163,17 +174,21 @@ function scanStatusRoute(req: Express.Request, res: Express.Response, next: Expr
 function scanStartRoute(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
   handleRequestRestfully(req, res, next, {
     post: async (): Promise<void> => {
-      res.status(501)
-        .send({ message: 'Not implemented yet' });
+      const scannerResponse = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/start`);
+
+      res.status(scannerResponse.statusCode)
+        .send();
     }
   });
 }
 
-function scanAbortRoute(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
+function scanStopRoute(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
   handleRequestRestfully(req, res, next, {
     post: async (): Promise<void> => {
-      res.status(501)
-        .send({ message: 'Not implemented yet' });
+      const scannerResponse = await getHttpClient().get(`${getConfig().data.remoteScannerApiUrl}/scan/stop`);
+
+      res.status(scannerResponse.statusCode)
+        .send();
     }
   });
 }

@@ -1,4 +1,6 @@
 export interface AppConfig {
+  readonly remoteScannerApiUrl: string;
+
   readonly webserver: {
     readonly host: string;
     readonly port: number;

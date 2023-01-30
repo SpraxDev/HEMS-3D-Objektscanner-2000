@@ -14,6 +14,8 @@ let postgresDb: PostgresDatabase;
 export function getConfig(): ConfigFile<AppConfig> {
   if (cfg == null) {
     cfg = new ConfigFile<AppConfig>(Path.join(getAppConfigDir(), 'config.json'), {
+      remoteScannerApiUrl: 'http://127.0.0.1:5000',
+
       webserver: {
         host: '0.0.0.0',
         port: 8080
