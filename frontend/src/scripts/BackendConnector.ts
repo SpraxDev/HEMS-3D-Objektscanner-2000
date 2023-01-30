@@ -1,6 +1,19 @@
 import { BACKEND_BASE_URL } from '../config';
 
 export class BackendConnector {
+  static async getScanStatus(): Promise<{ running: boolean, measurementData?: number[][] }> {
+    const scanStatus = await BackendConnector.httpGet<{ running: boolean }>(`${BACKEND_BASE_URL}/api/scan/status`);
+    return scanStatus;
+  }
+
+  static async startScan(): Promise<void> {
+    await this.httpPost(`${BACKEND_BASE_URL}/api/scan/start`);
+  }
+
+  static async stopScan(): Promise<void> {
+    await this.httpPost(`${BACKEND_BASE_URL}/api/scan/stop`);
+  }
+
   static async getObjectList(): Promise<ObjectResponseData[]> {
     return await BackendConnector.httpGet<ObjectResponseData[]>(`${BACKEND_BASE_URL}/api/object/list`);
   }
@@ -17,16 +30,12 @@ export class BackendConnector {
     return BackendConnector.httpDelete(`${BACKEND_BASE_URL}/api/object/${objectId}`);
   }
 
-  private static async httpGet<T>(url: string): Promise<T> {
-    const response = await fetch(url, { headers: { Accept: 'application/json' } });
-    if (!response.ok) {
-      throw new Error(`Got HTTP Status ${response.status} for URL '${url}'`);
-    }
-
+  private static async httpGet<T extends object>(url: string): Promise<T> {
+    const response = await this.executeFetch('GET', url);
     return response.json();
   }
 
-  private static async httpPost(url: string, data: object): Promise<void> {
+  private static async httpPost(url: string, data?: object): Promise<void> {
     await this.executeFetch('POST', url, data);
   }
 
