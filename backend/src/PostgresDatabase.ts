@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import { AppConfig } from './global';
 
 export default class PostgresDatabase {
@@ -33,7 +33,7 @@ export default class PostgresDatabase {
   }
 
   async findAllObjects(): Promise<ObjectModel[]> {
-    const dbRes = await this.query('SELECT id,name,created_at FROM objects;');
+    const dbRes = await this.query('SELECT id,name,created_at FROM objects ORDER BY created_at DESC;');
 
     const result: ObjectModel[] = [];
     for (const row of dbRes.rows) {
@@ -84,10 +84,6 @@ export default class PostgresDatabase {
 
   private query(query: string, values?: any[]): Promise<QueryResult> {
     return this.pool.query(query, values);
-  }
-
-  private async getConnection(): Promise<PoolClient> {
-    return this.pool.connect();
   }
 }
 

@@ -28,7 +28,7 @@ export function getConfig(): ConfigFile<AppConfig> {
         database: 'objectscanner_2000',
 
         ssl: true,
-        poolSize: 2
+        poolSize: 5
       }
     });
     cfg.saveIfChanged();
