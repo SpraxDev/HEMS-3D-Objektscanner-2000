@@ -1,22 +1,88 @@
 # 3D-Objektscanner 2000
+Im Rahmen eines Lernfeldes in der Berufsschule haben wir ([@Yannik-Roesser](https://github.com/Yannik-Roesser) und [@SpraxDev](https://github.com/SpraxDev)) den 3D-Objektscanner 2000 entwickelt.
 
-## a
-Beispiel Befehle, um die App nicht über den Datenbank-Admin-User laufen zu lassen.
+Im Grunde besteht dieser aus einem Drehteller, auf dem sich ein Objekt befindet – Ein *ToF Sensor* misst die Distanz zum Objekt-Messpunkt und speichert diesen ab.
 
-1. Mit `su - postgres` zum Datenbank-Admin-User wechseln
-  1. App-User anlegen: `psql --command="CREATE USER objectscanner_2000 WITH PASSWORD 'v3ry_s3cur3';"`
-  2. App-Datenbank anlegen: `psql --command="CREATE DATABASE objectscanner_2000 WITH OWNER objectscanner_2000;"`
-2. `database.sql` mit dem angelegten User einspielen: `psql --username=objectscanner_2000 --dbname=objectscanner_2000 --host=localhost --echo-all --file=database.sql`
-  * Unter Umständen ist ein Eintrag in der `pg_hba.conf` notwendig, für den Login (z.B. `hostssl    objectscanner_2000 objectscanner_2000 all scram-sha-256`)
+Der Drehteller dreht sich, wodurch wir eine 360°-Ansicht des Objekts erhalten; Der *ToF Sensor* kann in der Höhe verstellt werden, wodurch wir nun über das gesamte Objekt hinweg messen können.
+
+
+## Projektanforderungen
+Im Grundlegenden sollten wir folgende Anforderungen erfüllen:
+* Verwendung von mindestens vier unterschiedlichen Sensoren oder Aktoren
+  * 1x Stepper-Motor (Drehteller)
+  * 1x Stepper-Motor mit Linearschlitten (Auf- und Abwärtsbewegung; Für den *ToF Sensor*)
+  * 1x ToF Sensor
+  * Webinterface (Ein- und Ausgabe; Rendering 3D Modell; Download als STL-Datei)
+  * REST-API
+* Trennung von Erfassung und Ausgabe der Sensordaten (2 verschiedene Geräte)
+  * Erfassung: Python-Script
+  * Ausgabe: Webinterface
+* Sensorwerte und Eingaben müssen für mindestens 30 Tage gespeichert werden
+  * PostgreSQL-Datenbank (Speicherdauer unbegrenzt)
+* Fehleingaben des Nutzers müssen entsprechend behandelt werden
+  * Validierung der Eingaben
+  * Fehlermeldungen (z.B. bei Verbindungsproblemen)
+* Klar definiertes Anwendungsgebiet
+  * Videospiel-Prototyp günstiger und einfacher herstellen
+  * Marketing-Materialien (z.B. für die Produktpräsentation)
+  * 3D-Druck (z.B. als Hilfe, wenn ein Objekt als CAD file design werden muss)
+  * ...
+
 
 ## Projektstruktur
-// TODO: frontend, backend, python-Ding
+Das Projekt besteht aus mehrere Software-Komponenten:
+* Webinterface-Frontend
+* Webinterface-Backend (Webserver + REST-API)
+* Python-Script
+
+
+* Das Frontend muss einmalig gebaut werden und kann deployed werden oder vom Backend ausgeliefert werden.
+* Das Backend startet einen HTTP-Server, der die REST-API bereitstellt und optional das Frontend ausliefert.
+  * Das Backend kann auch auf einem anderen Server laufen, als das Frontend
+* Das Python-Script wird auf dem Raspberry Pi ausgeführt, der die meisten Sensoren und Aktoren steuert
+  * Das Python-Script kann auch auf einem anderen Server laufen, als das Backend
+
+Die Daten werden in einer PostgreSQL-Datenbank gespeichert.
+
 
 ## Installation
-// TODO
+Frontend und Backend benötigen Node.js (getestet mit Version 18) und npm (wird in der Regel mit Node.js mitgeliefert) als package manager.
+Für das Python-Skript wird Python 3 benötigt und `pip` als package manager.
 
-## Einkaufsliste
-// TODO: Aktualisieren?
+### Webinterface-Frontend
+1. Im Frontendordner `npm ci` ausführen, um alle notwendigen Pakete zu installieren
+2. `npm run build` ausführen, um das Frontend zu bauen
+    * Nach der ersten Ausführung, generiert sich eine `config.json` im `config/`-Ordner,
+      die angepasst werden kann
+3. Das fertige Frontend findet sich im neuen `dist/`-Ordner – Dieses kann (optional) manuell auf ein anderes System deployed werden
+
+### Webinterface-Backend
+1. Im Backendordner `npm ci` ausführen, um alle notwendigen Pakete zu installieren
+2. `npm run build` ausführen, um das Backend zu bauen
+3. Das fertige Backend findet sich im neuen `dist/`-Ordner – Die (production) Abhängigkeiten in `node_modules/` werden zur Ausführung benötigt
+4. Zum Starten `npm run start` ausführen
+    * Es generiert sich eine `config.json` im `config/`-Ordner, die angepasst werden muss
+    * Wurde das Frontend vorab gebaut und die Projekt-Ordnerstruktur nicht verändert, wird dieses
+      automatisch gefunden und ausgeliefert
+
+### Python-Script
+1. Die Hardware, wie in `Verkabelung.fzz` beschrieben, anschließen
+2. Die Hardware mit den GPIO-Pins des Raspberry Pi verbinden
+3. Im Python-Script-Ordner `pip3 install -r requirements.txt` ausführen, um alle notwendigen Pakete zu installieren
+    * Es empfiehlt sich vorab ein virtuelles Python-Environment anzulegen
+    * Unter Umständen muss `pip` anstelle von `pip3` verwendet werden
+4. `python3 main.py` ausführen, um das Script zu starten
+    * Unter Umständen muss `python` anstelle von `python3` verwendet werden
+5. Das Script wartet nun auf einen Startbefehl über die REST-API
+
+### PostgreSQL Datenbank
+Die `/database.sql` enthält die Datenbankstruktur und muss einmalig in die Datenbank eingespielt werden.
+Es enthält keine OWNER-Informationen, da diese je nach Umgebung variieren können.
+
+
+## Unsere Einkaufsliste
+Dies sind die Teile, die wir im Rahmen der Projekt-Konzeption verwendet haben.
+Ein Breadboard und Kabel sind ebenfalls Notwendig – Die 2 Raspberry Pis haben wir ebenfalls nicht aufgelistet, da diese als Teil der Aufgabenstellung bereits vorhanden waren.
 
 * [Steppermotor mit Linearschlitten](https://smile.amazon.de/dp/B07H4M3KW2/)
   * Hierran befestigen wir unseren *ToF Sensor*
@@ -36,3 +102,9 @@ Beispiel Befehle, um die App nicht über den Datenbank-Admin-User laufen zu lass
   * Kommt zur externen Stromversorgung des Motors (möglichst nah am Driver-Board)
     * Details gibts im [Datasheet](https://cdn.shopify.com/s/files/1/1509/1638/files/A4988_Stepper_Motor_Driver_Datenblatt_AZ-Delivery_Vertriebs_GmbH.pdf?v=1608626085)
   * Weniger als 70 V ist sicherlich auch okay, aber keinesfalls unter 40 V würde ich sagen
+
+
+## Lizenz
+Das Projekt ist grundsätzlich unter der MIT-Lizenz veröffentlicht.
+
+Das verwendete Logo im Frontend ist von DinosoftLabs auf Flaticon, lizensiert unter der [Flaticon license](https://www.freepikcompany.com/legal).
