@@ -78,6 +78,7 @@ Für das Python-Skript wird Python 3 benötigt und `pip` als package manager.
     * Unter Umständen muss `pip` anstelle von `pip3` verwendet werden
 4. Skript bei Bedarf konfigurieren
     * `postgres.py` anpassen, um die Datenbankverbindung zu konfigurieren
+    * `DISTANCE_BETWEEN_SENSOR_AND_TURN_TABLE_CENTER_MM` in `scanner_controller.py` anpassen, um die Entfernung zwischen dem ToF-Sensor und dem Mittelpunkt des Teller zu konfigurieren
 4. `python3 scanner_controller.py` ausführen, um das Script zu starten
     * Unter Umständen muss `python` anstelle von `python3` verwendet werden
 5. Das Script wartet nun auf einen Startbefehl über die REST-API
