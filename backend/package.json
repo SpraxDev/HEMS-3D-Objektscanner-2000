@@ -20,6 +20,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
+    "start": "node dist/index.js",
     "build": "tsc",
     "watch": "nodemon --ext ts --watch ./src --exec \"ts-node src/index.ts\""
   },
