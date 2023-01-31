@@ -107,6 +107,13 @@ ALTER TABLE ONLY public.object_measurements
 
 
 --
+-- Name: object_measurements_object_id_rotary_table_index_height_index_u; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX object_measurements_object_id_rotary_table_index_height_index_u ON public.object_measurements USING btree (object_id, rotary_table_index, height_index);
+
+
+--
 -- Name: objects objects_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
