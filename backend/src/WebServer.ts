@@ -21,7 +21,7 @@ export default class WebServer {
 
     const frontendPath = getPotentialFrontendDir();
     if (Fs.existsSync(frontendPath)) {
-      this.app.use('/', Express.static(frontendPath, { etag: false }));
+      this.app.use('/', Express.static(frontendPath, { etag: true, maxAge: '30min' }));
     } else {
       this.app.use(['/', '/index.html'], (req, res, next): void => {
         if (req.path !== '/' && req.path !== '/index.html') {
