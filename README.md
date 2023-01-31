@@ -68,13 +68,17 @@ Für das Python-Skript wird Python 3 benötigt und `pip` als package manager.
     * Wurde das Frontend vorab gebaut und die Projekt-Ordnerstruktur nicht verändert, wird dieses
       automatisch gefunden und ausgeliefert
 
-### Python-Script
+### Python-Script und Hardware
 1. Die Hardware, wie in `Verkabelung.fzz` beschrieben, anschließen
 2. Die Hardware mit den GPIO-Pins des Raspberry Pi verbinden
+    * *ToF Sensor* an den I2C-Bus anschließen
+    * Die Motor-Driver-Boards an die entsprechenden Pins aus `scanner-script/scanner_controller.py` (ca. ab Zeile 109 bei `GPIO_motorTeller` und `GPIO_motorVert`)
 3. Im Python-Script-Ordner `pip3 install -r requirements.txt` ausführen, um alle notwendigen Pakete zu installieren
     * Es empfiehlt sich vorab ein virtuelles Python-Environment anzulegen
     * Unter Umständen muss `pip` anstelle von `pip3` verwendet werden
-4. `python3 main.py` ausführen, um das Script zu starten
+4. Skript bei Bedarf konfigurieren
+    * `postgres.py` anpassen, um die Datenbankverbindung zu konfigurieren
+4. `python3 scanner_controller.py` ausführen, um das Script zu starten
     * Unter Umständen muss `python` anstelle von `python3` verwendet werden
 5. Das Script wartet nun auf einen Startbefehl über die REST-API
 

@@ -1,0 +1,5 @@
+adafruit-circuitpython-vl53l1x==1.1.9
+board==1.0
+psycopg2-binary==2.9.5
+RPi.GPIO==0.7.1
+RpiMotorLib==3.2
