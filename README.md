@@ -34,6 +34,9 @@ Das Projekt besteht aus mehrere Software-Komponenten:
 * Webinterface-Frontend
 * Webinterface-Backend (Webserver + REST-API)
 * Python-Script
+* FreeCAD
+  * Enthält FreeCAD-Projekte, mit Halterungen für die Hardware (zum selber Drucken)
+  * Je nach 3D-Druck sind die Maße der Halterungen unter Umständen 1 bis 2 mm zu klein
 
 
 * Das Frontend muss einmalig gebaut werden und kann deployed werden oder vom Backend ausgeliefert werden.
