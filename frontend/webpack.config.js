@@ -1,10 +1,10 @@
 const Path = require('path');
-const Fs = require('fs');
+const { ConfigFile } = require('@spraxdev/node-commons');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const cfg = new ConfigFile(Path.join(__dirname, 'config', 'config.json'), { backendUrl: 'http://localhost:8089' });
+const cfg = new ConfigFile(Path.join(__dirname, 'config', 'config.json'), { backendUrl: '' });
 cfg.saveIfChanged();
 
 /** @type {import('webpack').Configuration & {devServer: import('webpack-dev-server').Configuration}} */

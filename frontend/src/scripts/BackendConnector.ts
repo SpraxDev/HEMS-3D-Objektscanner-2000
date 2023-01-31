@@ -1,33 +1,33 @@
-import { BACKEND_BASE_URL } from '../config';
+import { getBackendUri } from '../config';
 
 export class BackendConnector {
   static async getScanStatus(): Promise<{ running: boolean, measurementData?: number[][] }> {
-    const scanStatus = await BackendConnector.httpGet<{ running: boolean }>(`${BACKEND_BASE_URL}/api/scan/status`);
+    const scanStatus = await BackendConnector.httpGet<{ running: boolean }>(getBackendUri('api/scan/status'));
     return scanStatus;
   }
 
   static async startScan(): Promise<void> {
-    await this.httpPost(`${BACKEND_BASE_URL}/api/scan/start`);
+    await this.httpPost(getBackendUri('api/scan/start'));
   }
 
   static async stopScan(): Promise<void> {
-    await this.httpPost(`${BACKEND_BASE_URL}/api/scan/stop`);
+    await this.httpPost(getBackendUri('api/scan/stop'));
   }
 
   static async getObjectList(): Promise<ObjectResponseData[]> {
-    return await BackendConnector.httpGet<ObjectResponseData[]>(`${BACKEND_BASE_URL}/api/object/list`);
+    return await BackendConnector.httpGet<ObjectResponseData[]>(getBackendUri(`api/object/list`));
   }
 
   static async getObject(objectId: number): Promise<ObjectResponseData> {
-    return BackendConnector.httpGet<ObjectResponseData>(`${BACKEND_BASE_URL}/api/object/${objectId}`);
+    return BackendConnector.httpGet<ObjectResponseData>(getBackendUri(`api/object/${objectId}`));
   }
 
   static async renameObject(objectId: number, newName: string): Promise<void> {
-    return BackendConnector.httpPost(`${BACKEND_BASE_URL}/api/object/${objectId}`, { action: 'rename', value: newName });
+    return BackendConnector.httpPost(getBackendUri(`api/object/${objectId}`), { action: 'rename', value: newName });
   }
 
   static async deleteObject(objectId: number): Promise<void> {
-    return BackendConnector.httpDelete(`${BACKEND_BASE_URL}/api/object/${objectId}`);
+    return BackendConnector.httpDelete(getBackendUri(`api/object/${objectId}`));
   }
 
   private static async httpGet<T extends object>(url: string): Promise<T> {
