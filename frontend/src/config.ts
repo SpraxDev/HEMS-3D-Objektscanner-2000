@@ -1,1 +1,2 @@
-export const BACKEND_BASE_URL = 'http://localhost:8089';
+const cfg = require('../config.json');
+export const BACKEND_BASE_URL = cfg.backendUrl;

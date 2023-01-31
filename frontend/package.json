@@ -40,6 +40,7 @@
     "three": "^0.149.0"
   },
   "devDependencies": {
+    "@spraxdev/node-commons": "github:spraxdev/node-commons#12123e997e5b0ead09d93a09daa2a070181dddd4",
     "@types/awesome-notifications": "^3.1.1",
     "@types/three": "^0.148.1",
     "autoprefixer": "^10.4.13",
