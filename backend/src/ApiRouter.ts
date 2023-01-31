@@ -6,20 +6,20 @@ import { ObjectModel } from './PostgresDatabase';
 export function createApiRouter(): Express.Router {
   const router = Express.Router();
 
-  router.use((req, res, next) => {
+  const defaultHeaderMiddleware = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     res.set({
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'User-Agent,Authorization,If-None-Match,Content-Type,If-Unmodified-Since',
     });
     next();
-  });
+  };
 
-  router.use('/object/list', objectListRoute);
-  router.use('/object/:objectId', objectByIdRoute);
+  router.use('/object/list', defaultHeaderMiddleware, objectListRoute);
+  router.use('/object/:objectId', defaultHeaderMiddleware, objectByIdRoute);
 
-  router.use('/scan/status', scanStatusRoute);
-  router.use('/scan/start', scanStartRoute);
-  router.use('/scan/stop', scanStopRoute);
+  router.use('/scan/status', defaultHeaderMiddleware, scanStatusRoute);
+  router.use('/scan/start', defaultHeaderMiddleware, scanStartRoute);
+  router.use('/scan/stop', defaultHeaderMiddleware, scanStopRoute);
 
   return router;
 }
