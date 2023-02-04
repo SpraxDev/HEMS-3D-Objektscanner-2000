@@ -27,7 +27,7 @@ def sensor_scan():
         measuredDistance = sensor.distance * 10
         normalizedDistance = measuredDistance / DISTANCE_BETWEEN_SENSOR_AND_TURN_TABLE_CENTER_MM
         normalizedDistance = max(0, min(1, normalizedDistance))
-        print("Distance: {} cm (Normalized: {})".format(measuredDistance, normalizedDistance))
+        print("Distance: {} mm (Normalized: {})".format(measuredDistance, normalizedDistance))
         sensor.clear_interrupt()
         return normalizedDistance
     # else:
