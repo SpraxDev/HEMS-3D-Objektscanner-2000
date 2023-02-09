@@ -42,6 +42,7 @@ Das Projekt besteht aus mehrere Software-Komponenten:
   * Je nach 3D-Druck sind die Maße der Halterungen unter Umständen 1 bis 2 mm zu klein
 
 
+Funktionen und Aufgaben der Komponenten:
 * Das Frontend muss einmalig gebaut werden und kann deployed werden oder vom Backend ausgeliefert werden.
 * Das Backend startet einen HTTP-Server, der die REST-API bereitstellt und optional das Frontend ausliefert.
   * Das Backend kann auch auf einem anderen Server laufen, als das Frontend
