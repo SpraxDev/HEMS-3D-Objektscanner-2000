@@ -11,7 +11,7 @@ def psql_create_object():
     name = "Object@" + str(datetime.datetime.now())
 
     cur = conn.cursor()
-    cur.execute("INSERT INTO objects (name) VALUES (%s) RETURNING id;", (name))
+    cur.execute("INSERT INTO objects (name) VALUES ('Objektname') RETURNING id;", ())
 
     object_id = cur.fetchone()[0]
 

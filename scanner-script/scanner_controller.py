@@ -27,15 +27,9 @@ def sensor_scan():
         measuredDistance = sensor.distance * 10
         normalizedDistance = measuredDistance / DISTANCE_BETWEEN_SENSOR_AND_TURN_TABLE_CENTER_MM
         normalizedDistance = max(0, min(1, normalizedDistance))
-        print("Distance: {} mm (Normalized: {})".format(measuredDistance, normalizedDistance))
+        print("Current Scan >> Distance: {} mm (Normalized: {})".format(measuredDistance, normalizedDistance))
         sensor.clear_interrupt()
         return normalizedDistance
-    # else:
-    #     print("Sensor not ready!")
-    #     sensor.clear_interrupt()
-    #     #sensor.start_ranging
-    #     sleep(3)
-    #     sensor_scan()
 
 class motor():
     def __init__(self, GPIO_direction_pin, GPIO_step_pin, GPIO_pins, motorType, GPIO_driver_enable_pin):
@@ -79,23 +73,22 @@ def current_scan(scan_id):
             postgres.psql_add_object_measurement(object_id= scan_id, height_index= verticalSteps/60, rotary_table_index= tellerSteps/2, normalized_measured_distance= sensor_scan())
             sensor_scan()
             tellerSteps+=1
-            print("[HORIZONTAL] Motor Stepped now at Step ",tellerSteps)
             teller_next_step(FORWARD, 2, 0.05)
         verticalSteps +=60
-        print("[VERTICAL] Motor Stepped now at Step ",verticalSteps)
         vertical_next_step(FORWARD, 60, 0.0005)
     scanner_state.state = scanner_state.STATE_STOPPING
     vertical_next_step(REVERSE, verticalSteps, 0.0005)
 
 def loop():
     while True:
-        sleep(1)
         if scanner_state.state == scanner_state.STATE_SHOULD_START:
             sensor.start_ranging()
             start_scan()
         elif scanner_state.state == scanner_state.STATE_STOPPING:
             sensor.stop_ranging()
             scanner_state.state = scanner_state.STATE_READY
+        sleep(1)
+        
 
 
 #Setup GPIO
@@ -121,5 +114,6 @@ sensor.timing_budget = 20
 
 #main
 webserver.startWebServerInOwnThread()
+scanner_state.state = scanner_state.STATE_READY
 
 loop()

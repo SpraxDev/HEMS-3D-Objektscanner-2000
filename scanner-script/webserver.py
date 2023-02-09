@@ -28,7 +28,7 @@ class WebServer(BaseHTTPRequestHandler):
             self._routeStart_POST()
             self.end_headers()
         elif self.path == "/scan/stop":
-            self._routeStop_POST(self)
+            self._routeStop_POST()
             self.end_headers()
         elif self.path == "/scan/status":
             self.send_response(405)
