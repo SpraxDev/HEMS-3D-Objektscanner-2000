@@ -1,9 +1,12 @@
 # 3D-Objektscanner 2000
+![Bild des Aufbaus mit Raspberry Pi, Drehteller und Distanzsensor](./docs/aufbau.jpg)
 Im Rahmen eines Lernfeldes in der Berufsschule haben wir ([@Yannik-Roesser](https://github.com/Yannik-Roesser) und [@SpraxDev](https://github.com/SpraxDev)) den 3D-Objektscanner 2000 entwickelt.
 
 Im Grunde besteht dieser aus einem Drehteller, auf dem sich ein Objekt befindet – Ein *ToF Sensor* misst die Distanz zum Objekt-Messpunkt und speichert diesen ab.
 
 Der Drehteller dreht sich, wodurch wir eine 360°-Ansicht des Objekts erhalten; Der *ToF Sensor* kann in der Höhe verstellt werden, wodurch wir nun über das gesamte Objekt hinweg messen können.
+
+*(Weitere Bilder in [docs/](./docs/))*
 
 
 ## Projektanforderungen
